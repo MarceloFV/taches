@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:notepad/app/components/custom_app_bar.dart';
-import 'package:notepad/app/components/custom_drawer.dart';
 
 class CustomScaffold extends StatelessWidget {
   final Widget body;

@@ -1,9 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:notepad/app/pages/home/home_view.dart';
 
+import 'app/models/folder_model.dart';
+import 'app/models/note_model.dart';
+import 'app/routes/app_pages.dart';
 import 'constants.dart';
 
-void main() {
+import 'package:path_provider/path_provider.dart' as path;
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  var dir = await path.getApplicationDocumentsDirectory();
+  Hive.init(dir.path);
+    Hive.registerAdapter(FolderModelAdapter());//TODO: descomentar
+    Hive.registerAdapter(NoteModelAdapter());//TODO: descomentar
+
   runApp(MyApp());
 }
 
@@ -11,7 +25,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
+      onGenerateTitle: (ctx) => 'Taches',
       title: 'NotePadPro',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -26,10 +41,11 @@ class MyApp extends StatelessWidget {
               color: Colors.white,
             ),
           ),
-          
         ),
       ),
-      home: HomeView(),
+      initialRoute: AppPages.INITIAL,
+      getPages: AppPages.routes,
+      enableLog: false,
     );
   }
 }

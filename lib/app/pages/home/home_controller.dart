@@ -1,14 +1,36 @@
-import 'package:flutter/material.dart';
-import 'package:notepad/app/pages/add_note/add_note_view.dart';
-import 'package:notepad/app/pages/folder/folder_view.dart';
+import 'package:get/get.dart';
+import 'package:notepad/app/models/folder_model.dart';
+import 'package:notepad/app/providers/folder_provider.dart';
+import 'package:notepad/app/routes/app_pages.dart';
 
-class HomeController {
-  
+class HomeController extends GetxController {
+  RxList<String> folders = <String>[].obs;
 
-  onFolderPressed(context){
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => FolderView()),
+  FolderProvider folderProvider = FolderProvider();
+
+  onAddFolderPressed(String title) {
+    FolderModel folder = FolderModel(title: title);
+    folderProvider.save(folder);
+    updateFolderList();
+  }
+
+  updateFolderList() async {
+    var list = await folderProvider.getFolders();
+    folders.assignAll(list.map((model) => model.title));
+  }
+
+  @override
+  void onReady() async {
+    super.onReady();
+    updateFolderList();
+  }
+
+  onFolderTapped(String folderTitle) {
+    Get.toNamed(
+      Routes.FOLDER,
+      arguments: {
+        'folderTitle': folderTitle,
+      },
     );
   }
 }
